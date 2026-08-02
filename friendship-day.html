@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>World's Most Dangerous Friend — Friendship Day</title>
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --void-0:#08071a;
+  --void-1:#120c2b;
+  --void-2:#1c1240;
+  --pink:#ff6fc9;
+  --pink-soft:#ffc2ec;
+  --lavender:#b28cff;
+  --sky:#7fe3ff;
+  --gold:#ffd66b;
+  --glow:#fff8ff;
+  --glass: rgba(255,255,255,0.06);
+  --glass-brd: rgba(255,255,255,0.16);
+  --font-display: ui-rounded, "Segoe UI Rounded", "Nunito", "Quicksand", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease-out-back: cubic-bezier(.34,1.56,.64,1);
+  --ease-smooth: cubic-bezier(.22,1,.36,1);
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background:radial-gradient(ellipse at 50% -10%, var(--void-2), var(--void-0) 60%);
+  color:var(--glow);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+  min-height:100vh;
+}
+body.no-fancy-cursor{ cursor:auto; }
+::selection{ background:var(--pink); color:#1c1240; }
+h1,h2,h3,.display{ font-family:var(--font-display); font-weight:800; letter-spacing:.5px; margin:0; }
+p{ line-height:1.6; }
+button{ font-family:inherit; }
+a{ color:inherit; }
+.hidden{ display:none !important; }
+.glow-text{
+  color:var(--glow);
+  text-shadow:0 0 8px rgba(255,255,255,.6), 0 0 24px var(--pink), 0 0 48px var(--lavender);
+}
+.gold-text{
+  background:linear-gradient(90deg,#ffe9a8,var(--gold),#ffe9a8);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0 18px rgba(255,214,107,.5);
+}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 18px; border-radius:999px;
+  background:var(--glass); border:1px solid var(--glass-brd);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+}
+.section{ position:relative; padding:120px 24px; max-width:980px; margin:0 auto; z-index:2; }
+.section-inner{ position:relative; z-index:2; }
+.center{ text-align:center; }
+
+/* ============================================================
+   BACKDROP CANVASES
+   ============================================================ */
+#bg-canvas{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+#fx-canvas{ position:fixed; inset:0; z-index:9990; pointer-events:none; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor-dot, #cursor-ring{
+  position:fixed; top:0; left:0; pointer-events:none; z-index:99999;
+  border-radius:50%; transform:translate(-50%,-50%);
+}
+#cursor-dot{ width:8px; height:8px; background:var(--pink); box-shadow:0 0 10px var(--pink); }
+#cursor-ring{ width:34px; height:34px; border:1.5px solid var(--sky); opacity:.7; transition:width .18s,height .18s,border-color .18s; }
+.cursor-pop #cursor-ring{ width:54px; height:54px; border-color:var(--gold); }
+
+/* ============================================================
+   TOP CHROME: progress bar + music toggle
+   ============================================================ */
+#progress-bar{
+  position:fixed; top:0; left:0; height:4px; width:0%;
+  background:linear-gradient(90deg,var(--pink),var(--lavender),var(--sky),var(--gold));
+  z-index:99998; box-shadow:0 0 12px var(--pink);
+  transition:width .1s linear;
+}
+#chrome-controls{
+  position:fixed; top:18px; right:18px; z-index:99997;
+  display:flex; gap:10px;
+}
+.chip-btn{
+  width:44px; height:44px; border-radius:50%;
+  background:var(--glass); border:1px solid var(--glass-brd);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  color:var(--glow); font-size:1.1rem; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:transform .25s var(--ease-out-back), box-shadow .25s;
+}
+.chip-btn:hover{ transform:scale(1.12) rotate(-6deg); box-shadow:0 0 18px var(--pink); }
+
+/* ============================================================
+   NAME GATE
+   ============================================================ */
+#name-gate{
+  position:fixed; inset:0; z-index:99990;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 30%, #1c1240, #08071a 70%);
+  padding:24px;
+}
+.gate-card{
+  width:100%; max-width:460px; text-align:center;
+  background:var(--glass); border:1px solid var(--glass-brd);
+  border-radius:28px; padding:44px 32px;
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 60px rgba(178,140,255,.15);
+  animation:gate-in 1s var(--ease-out-back);
+}
+@keyframes gate-in{ from{ opacity:0; transform:translateY(30px) scale(.95); } to{ opacity:1; transform:none; } }
+.gate-eyebrow{ font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--sky); opacity:.8; }
+.gate-title{ font-size:1.9rem; margin:14px 0 6px; }
+.gate-sub{ opacity:.75; font-size:.95rem; margin-bottom:26px; }
+#name-input{
+  width:100%; padding:16px 18px; border-radius:16px;
+  border:1px solid var(--glass-brd); background:rgba(255,255,255,.05);
+  color:var(--glow); font-size:1.1rem; text-align:center; outline:none;
+  font-family:var(--font-display);
+  transition:box-shadow .3s, border-color .3s;
+}
+#name-input:focus{ border-color:var(--pink); box-shadow:0 0 0 4px rgba(255,111,201,.18); }
+#name-input::placeholder{ color:rgba(255,255,255,.35); }
+#gate-error{ color:var(--gold); font-size:.82rem; height:18px; margin-top:8px; }
+.gate-go{
+  margin-top:18px; width:100%; padding:15px; border:none; border-radius:16px;
+  background:linear-gradient(90deg,var(--pink),var(--lavender));
+  color:#180a2b; font-weight:800; font-size:1rem; letter-spacing:.02em;
+  cursor:pointer; transition:transform .2s var(--ease-out-back), box-shadow .2s;
+  box-shadow:0 10px 30px rgba(255,111,201,.35);
+}
+.gate-go:hover{ transform:translateY(-3px) scale(1.02); box-shadow:0 16px 40px rgba(255,111,201,.5); }
+.gate-hint{ margin-top:16px; font-size:.75rem; opacity:.5; }
+
+/* ============================================================
+   SITE WRAPPER
+   ============================================================ */
+#site{ position:relative; z-index:1; opacity:0; }
+#site.revealed{ opacity:1; }
+
+/* ============================================================
+   INTRO CINEMATIC
+   ============================================================ */
+#intro{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:relative; text-align:center; padding:24px; overflow:hidden;
+}
+.intro-line{
+  font-family:var(--font-display); font-size:clamp(.85rem,2.4vw,1.1rem);
+  letter-spacing:.08em; color:var(--sky); opacity:0; min-height:1.6em;
+}
+.intro-line.show{ animation:line-in .6s var(--ease-smooth) forwards; }
+@keyframes line-in{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+#load-bar-track{
+  width:min(360px,80vw); height:8px; border-radius:999px; margin:22px auto 0;
+  background:rgba(255,255,255,.08); overflow:hidden; border:1px solid var(--glass-brd);
+}
+#load-bar-fill{
+  height:100%; width:0%; border-radius:999px;
+  background:linear-gradient(90deg,var(--pink),var(--sky),var(--gold));
+  box-shadow:0 0 16px var(--pink);
+  transition:width .25s linear;
+}
+#warning-block{ opacity:0; margin-top:34px; }
+#warning-block.show{ animation:warn-pop .7s var(--ease-out-back) forwards; }
+@keyframes warn-pop{ from{ opacity:0; transform:scale(.7);} to{ opacity:1; transform:scale(1);} }
+.warning-sign{ font-size:2.4rem; filter:drop-shadow(0 0 20px var(--gold)); }
+.warning-caption{ margin-top:10px; opacity:.85; font-size:1rem; }
+#name-reveal{
+  margin-top:26px; font-size:clamp(2.6rem,9vw,5.5rem); line-height:1;
+  opacity:0; transform:perspective(600px) rotateY(0deg);
+}
+#name-reveal.show{ animation:name-spin 1.8s var(--ease-out-back) forwards; }
+@keyframes name-spin{
+  0%{ opacity:0; transform:perspective(600px) rotateY(180deg) scale(.6); }
+  60%{ opacity:1; }
+  100%{ opacity:1; transform:perspective(600px) rotateY(0deg) scale(1); }
+}
+.sparkle-row{ font-size:1.4rem; margin-top:10px; opacity:0; }
+.sparkle-row.show{ animation:line-in .6s var(--ease-smooth) forwards .3s; }
+#intro-scrolldown{
+  position:absolute; bottom:26px; opacity:0; font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--pink-soft);
+}
+#intro-scrolldown.show{ animation:bob 2.4s ease-in-out infinite, line-in .6s ease forwards; }
+@keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(8px);} }
+
+/* ============================================================
+   GLASS CARD (shared)
+   ============================================================ */
+.glass-card{
+  background:var(--glass); border:1px solid var(--glass-brd); border-radius:24px;
+  padding:32px; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+/* ============================================================
+   REVEAL ANIMATIONS (scroll-triggered)
+   ============================================================ */
+[data-anim]{ opacity:0; }
+[data-anim].in-view{ opacity:1; }
+
+[data-anim="fade-up"]{ transform:translateY(50px); transition:opacity .9s var(--ease-smooth), transform .9s var(--ease-smooth); }
+[data-anim="fade-up"].in-view{ transform:none; }
+
+[data-anim="rotate3d"]{ transform:perspective(900px) rotateX(35deg) scale(.9); transition:opacity 1s var(--ease-smooth), transform 1s var(--ease-out-back); }
+[data-anim="rotate3d"].in-view{ transform:perspective(900px) rotateX(0) scale(1); }
+
+[data-anim="golden-glow"]{ filter:blur(6px); transition:opacity 1.1s ease, filter 1.1s ease; }
+[data-anim="golden-glow"].in-view{ filter:blur(0); text-shadow:0 0 30px var(--gold); }
+
+[data-anim="comic-pop"]{ transform:scale(.4) rotate(-8deg); transition:opacity .5s, transform .6s var(--ease-out-back); }
+[data-anim="comic-pop"].in-view{ transform:scale(1) rotate(0deg); }
+
+[data-anim="cartoon-bounce"]{ transform:translateY(80px); transition:opacity .6s, transform .9s cubic-bezier(.68,-0.6,.32,1.6); }
+[data-anim="cartoon-bounce"].in-view{ transform:translateY(0); }
+
+[data-anim="smoke"]{ filter:blur(14px); transform:translateY(20px) scale(1.06); transition:opacity 1.4s ease, filter 1.4s ease, transform 1.4s ease; }
+[data-anim="smoke"].in-view{ filter:blur(0); transform:none; }
+
+[data-anim="float-letters"] .fl{ display:inline-block; opacity:0; transform:translateY(24px) rotate(6deg); transition:opacity .5s, transform .5s var(--ease-out-back); }
+[data-anim="float-letters"].in-view .fl{ opacity:1; transform:none; }
+
+[data-anim="typewriter"] .tw-cursor{ display:inline-block; width:2px; background:var(--pink); margin-left:2px; animation:blink 1s step-end infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+[data-anim="particle-reveal"]{ transition:opacity 1.2s ease; }
+[data-anim="particle-reveal"].in-view{ animation:particle-shake .5s ease; }
+@keyframes particle-shake{ 0%,100%{ transform:none; } 30%{ transform:translate(2px,-1px);} 60%{ transform:translate(-2px,1px);} }
+
+/* ============================================================
+   INTRO to sections spacing / labels
+   ============================================================ */
+.eyebrow{ color:var(--sky); font-size:.75rem; letter-spacing:.22em; text-transform:uppercase; margin-bottom:14px; display:block; }
+.section h2{ font-size:clamp(1.8rem,5vw,2.8rem); margin-bottom:14px; }
+.section .lead{ opacity:.8; max-width:640px; margin:0 auto 40px; }
+
+/* ============================================================
+   AI SCAN SECTION
+   ============================================================ */
+#scan-card{ position:relative; overflow:hidden; }
+#scan-card::before{
+  content:""; position:absolute; left:0; right:0; height:3px; top:0;
+  background:linear-gradient(90deg,transparent,var(--sky),transparent);
+  box-shadow:0 0 20px var(--sky);
+  animation:scan-move 2.6s linear infinite;
+}
+@keyframes scan-move{ 0%{ top:0%; } 100%{ top:100%; } }
+#scan-log{ font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.85rem; color:var(--sky); min-height:2.6em; opacity:.9; margin-bottom:18px; }
+.stat-grid{ display:grid; grid-template-columns:1fr; gap:16px; }
+.stat-row{ opacity:0; transform:translateX(-16px); transition:opacity .5s, transform .5s var(--ease-out-back); }
+.stat-row.show{ opacity:1; transform:none; }
+.stat-row .stat-label{ display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:6px; }
+.stat-row .stat-value{ color:var(--gold); font-weight:700; }
+.stat-track{ height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; }
+.stat-fill{ height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,var(--pink),var(--lavender),var(--sky)); box-shadow:0 0 12px var(--pink); transition:width 1.1s var(--ease-smooth); }
+.rating-line{ text-align:center; margin-top:26px; font-size:2.4rem; }
+
+/* ============================================================
+   FUNNY TOASTS
+   ============================================================ */
+#toast-layer{ position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:99996; display:flex; flex-direction:column; gap:10px; align-items:center; pointer-events:none; }
+.toast{
+  background:var(--glass); border:1px solid var(--glass-brd); border-radius:16px;
+  padding:12px 20px; font-size:.9rem; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  opacity:0; transform:translateY(-14px) scale(.9);
+  animation:toast-in .45s var(--ease-out-back) forwards, toast-out .5s ease forwards 2.6s;
+  white-space:nowrap;
+}
+@keyframes toast-in{ to{ opacity:1; transform:none; } }
+@keyframes toast-out{ to{ opacity:0; transform:translateY(-10px) scale(.94); } }
+
+/* ============================================================
+   MAGIC BUTTONS
+   ============================================================ */
+.magic-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:8px; }
+@media(max-width:520px){ .magic-grid{ grid-template-columns:1fr; } }
+.magic-btn{
+  padding:20px 16px; border-radius:20px; border:1px solid var(--glass-brd);
+  background:var(--glass); color:var(--glow); font-size:1rem; font-weight:700; cursor:pointer;
+  transition:transform .25s var(--ease-out-back), box-shadow .25s, background .25s;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+}
+.magic-btn:hover{ transform:translateY(-4px) scale(1.03); box-shadow:0 14px 34px rgba(255,111,201,.28); }
+.magic-btn:active{ transform:scale(.96); }
+#magic-msg{ text-align:center; margin-top:20px; min-height:1.4em; font-weight:700; color:var(--gold); }
+
+/* ============================================================
+   ROAST / COMPLIMENT
+   ============================================================ */
+.roast-card{
+  perspective:1200px; cursor:pointer; height:170px; margin-bottom:18px;
+}
+.roast-inner{
+  position:relative; width:100%; height:100%; transition:transform .7s var(--ease-out-back); transform-style:preserve-3d;
+}
+.roast-card.flipped .roast-inner{ transform:rotateY(180deg); }
+.roast-face{
+  position:absolute; inset:0; border-radius:20px; padding:22px; display:flex; align-items:center; justify-content:center; text-align:center;
+  backface-visibility:hidden; border:1px solid var(--glass-brd);
+}
+.roast-front{ background:linear-gradient(135deg,rgba(255,111,201,.14),rgba(127,227,255,.08)); }
+.roast-back{ background:linear-gradient(135deg,rgba(178,140,255,.2),rgba(255,214,107,.12)); transform:rotateY(180deg); }
+.roast-front p, .roast-back p{ font-size:1.02rem; font-weight:600; }
+.roast-tag{ font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; opacity:.6; position:absolute; bottom:14px; }
+
+/* ============================================================
+   MASCOT
+   ============================================================ */
+#mascot{
+  position:fixed; right:18px; bottom:18px; z-index:9995; width:74px; height:74px;
+  transition:transform .3s var(--ease-out-back);
+  filter:drop-shadow(0 8px 20px rgba(255,111,201,.4));
+  cursor:pointer;
+}
+#mascot.talk{ animation:mascot-bounce .5s var(--ease-out-back); }
+@keyframes mascot-bounce{ 0%{ transform:scale(1);} 40%{ transform:scale(1.18) rotate(-6deg);} 100%{ transform:scale(1);} }
+#mascot-bubble{
+  position:fixed; right:100px; bottom:24px; z-index:9995; max-width:220px;
+  background:var(--glass); border:1px solid var(--glass-brd); border-radius:16px 16px 4px 16px;
+  padding:10px 14px; font-size:.82rem; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  opacity:0; transform:translateY(8px) scale(.9); transition:all .3s var(--ease-out-back);
+}
+#mascot-bubble.show{ opacity:1; transform:none; }
+
+/* ============================================================
+   CLICK SURPRISES
+   ============================================================ */
+.sky-stage{
+  position:relative; height:420px; border-radius:28px; overflow:hidden;
+  background:linear-gradient(180deg,#1a1140,#0c0824 70%);
+  border:1px solid var(--glass-brd);
+}
+.sky-obj{ position:absolute; cursor:pointer; user-select:none; transition:transform .2s var(--ease-out-back); background:none; border:none; }
+.sky-obj:hover{ transform:scale(1.15); }
+.sky-obj:active{ transform:scale(.9); }
+#moon-obj{ top:30px; right:40px; font-size:3.2rem; filter:drop-shadow(0 0 20px var(--gold)); }
+.cloud-obj{ font-size:2.4rem; filter:drop-shadow(0 0 10px rgba(255,255,255,.3)); }
+.star-obj{ font-size:1.2rem; color:var(--sky); }
+.heart-zone{ position:absolute; inset:0; }
+.hint-caption{ position:absolute; bottom:12px; left:0; right:0; text-align:center; font-size:.75rem; opacity:.6; letter-spacing:.08em; }
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.quiz-card{ text-align:center; }
+.quiz-options{ display:flex; flex-direction:column; gap:14px; margin-top:24px; }
+.quiz-opt{
+  padding:16px; border-radius:16px; border:1px solid var(--glass-brd); background:var(--glass);
+  color:var(--glow); font-size:1rem; cursor:pointer; transition:transform .3s, opacity .5s, background .3s;
+}
+.quiz-opt:hover{ background:rgba(255,255,255,.1); }
+.quiz-opt.correct{ background:linear-gradient(90deg,rgba(255,214,107,.3),rgba(255,111,201,.25)); border-color:var(--gold); }
+.quiz-opt.fly-away{ animation:fly-away .6s ease forwards; }
+@keyframes fly-away{ to{ transform:translateX(120%) rotate(20deg); opacity:0; } }
+#quiz-result{ margin-top:18px; min-height:1.4em; font-weight:700; color:var(--gold); }
+
+/* ============================================================
+   FUN METER
+   ============================================================ */
+.meter-list{ display:flex; flex-direction:column; gap:18px; }
+.meter-row .meter-label{ display:flex; justify-content:space-between; font-size:.92rem; margin-bottom:6px; }
+.meter-track{ height:12px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; }
+.meter-fill{ height:100%; width:0%; border-radius:999px; box-shadow:0 0 14px currentColor; transition:width 1.3s var(--ease-smooth); }
+
+/* ============================================================
+   CERTIFICATE
+   ============================================================ */
+#cert-wrap{ text-align:center; }
+#cert-canvas{ width:100%; max-width:560px; border-radius:18px; border:1px solid var(--glass-brd); box-shadow:0 20px 60px rgba(0,0,0,.4); }
+.cert-actions{ display:flex; gap:12px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+.ghost-btn{
+  padding:12px 22px; border-radius:14px; border:1px solid var(--glass-brd); background:var(--glass);
+  color:var(--glow); cursor:pointer; font-weight:700; transition:transform .25s var(--ease-out-back), background .25s;
+}
+.ghost-btn:hover{ transform:translateY(-3px); background:rgba(255,255,255,.1); }
+
+/* ============================================================
+   COUNTDOWN / CLOCK / MEMORY WALL / QUOTES
+   ============================================================ */
+.mini-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:560px){ .mini-grid{ grid-template-columns:1fr; } }
+.mini-card{ text-align:center; }
+.mini-card .big-num{ font-size:2.2rem; font-weight:800; color:var(--gold); }
+.mini-card .cap{ font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; opacity:.6; margin-top:4px; }
+#countdown-grid{ display:flex; gap:12px; justify-content:center; margin-top:14px; }
+.cd-unit{ min-width:64px; }
+.cd-unit .n{ font-size:1.8rem; font-weight:800; color:var(--sky); }
+.cd-unit .l{ font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; opacity:.6; }
+#quote-box{ min-height:3.2em; font-style:italic; opacity:.9; }
+.board{
+  position:relative; min-height:220px; border-radius:20px; background:repeating-linear-gradient(45deg,rgba(255,255,255,.02),rgba(255,255,255,.02) 10px,rgba(255,255,255,.04) 10px,rgba(255,255,255,.04) 20px);
+  border:1px solid var(--glass-brd); padding:18px; display:flex; flex-wrap:wrap; gap:14px; align-content:flex-start;
+}
+.sticky{
+  width:130px; min-height:110px; padding:12px; border-radius:6px; font-size:.82rem;
+  transform:rotate(var(--r,-3deg)); box-shadow:0 8px 18px rgba(0,0,0,.35);
+  display:flex; align-items:center; justify-content:center; text-align:center; word-break:break-word;
+}
+#note-form{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+#note-input{ flex:1; min-width:180px; padding:12px 14px; border-radius:12px; border:1px solid var(--glass-brd); background:rgba(255,255,255,.05); color:var(--glow); outline:none; }
+#note-input:focus{ border-color:var(--pink); }
+
+/* ============================================================
+   SPECIAL LETTER
+   ============================================================ */
+#letter-card{ position:relative; }
+#letter-text p{ opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease; margin:0 0 14px; }
+#letter-text p.show{ opacity:1; transform:none; }
+
+/* ============================================================
+   FINALE
+   ============================================================ */
+#finale{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; position:relative; padding:40px 24px; overflow:hidden;
+}
+#finale-title{ font-size:clamp(2rem,7vw,3.6rem); opacity:0; }
+#finale-title.show{ animation:name-spin 1.6s var(--ease-out-back) forwards; }
+#finale-from{ margin-top:18px; font-size:1.1rem; opacity:0; }
+#finale-from.show{ animation:line-in .8s ease forwards .3s; }
+.finale-actions{ margin-top:34px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; opacity:0; }
+.finale-actions.show{ animation:line-in .8s ease forwards .6s; }
+
+footer{ text-align:center; padding:40px 24px 60px; opacity:.4; font-size:.75rem; letter-spacing:.08em; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
+@media (pointer:coarse){
+  #cursor-dot,#cursor-ring{ display:none; }
+  body{ cursor:auto; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<canvas id="fx-canvas"></canvas>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+<div id="toast-layer"></div>
+
+<div id="chrome-controls">
+  <button class="chip-btn" id="music-toggle" title="Toggle magical music" aria-label="Toggle music">🔈</button>
+  <button class="chip-btn" id="share-toggle" title="Share this site" aria-label="Share">🔗</button>
+</div>
+
+<!-- ============================================================
+     NAME GATE
+     ============================================================ -->
+<div id="name-gate">
+  <div class="gate-card">
+    <span class="gate-eyebrow">Top Secret Friendship Protocol</span>
+    <h1 class="gate-title glow-text">Whose profile are we hacking into today? 👀</h1>
+    <p class="gate-sub">Type her name below and this entire website will build itself around her.</p>
+    <input id="name-input" type="text" maxlength="24" placeholder="e.g. Riya, Simran, Priya..." autocomplete="off">
+    <div id="gate-error"></div>
+    <button class="gate-go" id="gate-submit">Begin the Investigation ✨</button>
+    <div class="gate-hint">No signup. No data saved. Just chaos and confetti.</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN SITE
+     ============================================================ -->
+<div id="site">
+
+  <!-- INTRO -->
+  <section id="intro">
+    <div id="intro-lines">
+      <div class="intro-line" id="il-1">Loading World's Most Dangerous Friend...</div>
+    </div>
+    <div id="load-bar-track"><div id="load-bar-fill"></div></div>
+    <div id="warning-block">
+      <div class="warning-sign">⚠️</div>
+      <div class="warning-caption">You are about to enter the profile of</div>
+      <h1 id="name-reveal" class="glow-text display"><span class="fname"></span></h1>
+      <div class="sparkle-row">✨🦋💖✨</div>
+    </div>
+    <div id="intro-scrolldown">Scroll to proceed ↓</div>
+  </section>
+
+  <!-- AI SCAN -->
+  <section class="section" id="scan-section">
+    <div class="section-inner">
+      <span class="eyebrow">System Analysis</span>
+      <h2 data-anim="fade-up">Running the Official Friendship Scan</h2>
+      <p class="lead" data-anim="fade-up">Please remain still, <span class="fname"></span>. This will only feel mildly invasive.</p>
+      <div class="glass-card" id="scan-card" data-anim="smoke">
+        <div id="scan-log">Initializing scanner...</div>
+        <div class="stat-grid" id="stat-grid"></div>
+        <div class="rating-line gold-text" id="rating-line" style="opacity:0;">∞ / 10</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAGIC BUTTONS -->
+  <section class="section" id="magic-section">
+    <div class="section-inner center">
+      <span class="eyebrow">Handle With Care</span>
+      <h2 data-anim="comic-pop">Do Not Press These Buttons</h2>
+      <p class="lead" data-anim="fade-up">(You are absolutely going to press these buttons.)</p>
+      <div class="magic-grid">
+        <button class="magic-btn" data-fx="press-me">Press Me 💖</button>
+        <button class="magic-btn" data-fx="dont-press">Don't Press Me 🚫</button>
+        <button class="magic-btn" data-fx="seriously-dont">Seriously Don't Press 😳</button>
+        <button class="magic-btn" data-fx="one-more">One More Time 🔁</button>
+      </div>
+      <div id="magic-msg"></div>
+    </div>
+  </section>
+
+  <!-- ROAST + COMPLIMENT -->
+  <section class="section" id="roast-section">
+    <div class="section-inner">
+      <span class="eyebrow">The Friendly Roast™</span>
+      <h2 data-anim="rotate3d" class="center">Tap a Card. Get Roasted. Get Loved.</h2>
+      <p class="lead center" data-anim="fade-up">Every roast comes with a compliment chaser. That's the rule.</p>
+      <div id="roast-grid"></div>
+    </div>
+  </section>
+
+  <!-- CLICK SURPRISES -->
+  <section class="section" id="sky-section">
+    <div class="section-inner">
+      <span class="eyebrow">Interactive Sky</span>
+      <h2 data-anim="cartoon-bounce" class="center">Poke the Sky. See What Happens.</h2>
+      <p class="lead center" data-anim="fade-up">Stars, moon, clouds, hearts — all fully clickable, zero consequences.</p>
+      <div class="sky-stage" id="sky-stage">
+        <button class="sky-obj" id="moon-obj">🌙</button>
+        <div class="hint-caption">Click anything. Everything is clickable.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASCOT LIVES HERE VISUALLY BUT IS FIXED -->
+
+  <!-- QUIZ -->
+  <section class="section" id="quiz-section">
+    <div class="section-inner">
+      <span class="eyebrow">Pop Quiz</span>
+      <div class="glass-card quiz-card" data-anim="golden-glow">
+        <h2>Who is the best friend?</h2>
+        <div class="quiz-options" id="quiz-options">
+          <button class="quiz-opt" data-correct="false">A) Someone Else</button>
+          <button class="quiz-opt" data-correct="false">B) Still Someone Else</button>
+          <button class="quiz-opt" data-correct="true">C) Obviously <span class="fname"></span></button>
+        </div>
+        <div id="quiz-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUN METER -->
+  <section class="section" id="meter-section">
+    <div class="section-inner">
+      <span class="eyebrow">Live Diagnostics</span>
+      <h2 data-anim="fade-up">The Friendship Meter</h2>
+      <div class="glass-card" data-anim="fade-up">
+        <div class="meter-list" id="meter-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATE -->
+  <section class="section" id="cert-section">
+    <div class="section-inner center">
+      <span class="eyebrow">Official Documentation</span>
+      <h2 data-anim="comic-pop">Your Certificate of Legendary Friendship</h2>
+      <p class="lead" data-anim="fade-up">Frame it. Print it. Send it. Refrigerator-magnet it.</p>
+      <div id="cert-wrap" data-anim="fade-up">
+        <canvas id="cert-canvas" width="1000" height="620"></canvas>
+        <div class="cert-actions">
+          <button class="ghost-btn" id="cert-download">⬇️ Download Certificate</button>
+          <button class="ghost-btn" id="cert-regen">🔄 Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MINI TOOLS: countdown / clock / quote -->
+  <section class="section" id="tools-section">
+    <div class="section-inner">
+      <span class="eyebrow">Bonus Gadgets</span>
+      <h2 class="center" data-anim="fade-up">Because Why Not</h2>
+      <div class="mini-grid">
+        <div class="glass-card mini-card" data-anim="fade-up">
+          <div class="cap">Next Friendship Day In</div>
+          <div id="countdown-grid"></div>
+        </div>
+        <div class="glass-card mini-card" data-anim="fade-up">
+          <div class="cap">Right Now, Somewhere You Are</div>
+          <div class="big-num" id="live-clock">--:--:--</div>
+          <div class="cap" id="live-date">Loading date...</div>
+        </div>
+      </div>
+      <div class="glass-card" style="margin-top:16px;" data-anim="fade-up">
+        <div class="cap" style="margin-bottom:10px;">Friendship Quote Generator</div>
+        <div id="quote-box">Tap the button for a dose of wisdom.</div>
+        <div style="text-align:center; margin-top:14px;">
+          <button class="ghost-btn" id="quote-btn">✨ New Quote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMORY WALL -->
+  <section class="section" id="wall-section">
+    <div class="section-inner">
+      <span class="eyebrow">Memory Wall</span>
+      <h2 class="center" data-anim="fade-up">Pin a Memory</h2>
+      <p class="lead center" data-anim="fade-up">Add your own sticky note to the board below (just for this session).</p>
+      <div class="board" id="board"></div>
+      <form id="note-form">
+        <input id="note-input" maxlength="60" placeholder="Type a tiny memory or inside joke..." autocomplete="off">
+        <button type="submit" class="ghost-btn">📌 Pin It</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- SPECIAL LETTER -->
+  <section class="section" id="letter-section">
+    <div class="section-inner">
+      <span class="eyebrow">One Last Thing</span>
+      <div class="glass-card" id="letter-card" data-anim="fade-up">
+        <div id="letter-text"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINALE -->
+  <section id="finale">
+    <div class="pill" style="margin-bottom:18px;">✨ Grand Finale ✨</div>
+    <h1 id="finale-title" class="glow-text display">Happy Friendship Day<br><span class="fname"></span></h1>
+    <p id="finale-from">From, a friend who is definitely not writing this at 2am</p>
+    <div class="finale-actions">
+      <button class="ghost-btn" id="replay-btn">🔁 Watch It Again</button>
+      <button class="ghost-btn" id="finale-fireworks">🎆 More Fireworks</button>
+    </div>
+  </section>
+
+  <footer>Made with chaos, glitter, and zero romantic intentions ✦ a Friendship Day production</footer>
+</div>
+
+<div id="mascot-bubble"></div>
+<div id="mascot" title="Your friendly mascot">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <radialGradient id="mg" cx="35%" cy="30%" r="80%">
+        <stop offset="0%" stop-color="#ffd6f5"/>
+        <stop offset="60%" stop-color="#ff8fda"/>
+        <stop offset="100%" stop-color="#b28cff"/>
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="52" r="38" fill="url(#mg)"/>
+    <circle cx="37" cy="48" r="6" fill="#241338"/>
+    <circle cx="63" cy="48" r="6" fill="#241338"/>
+    <circle cx="39" cy="46" r="1.6" fill="#fff"/>
+    <circle cx="65" cy="46" r="1.6" fill="#fff"/>
+    <path d="M36 64 Q50 76 64 64" stroke="#241338" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M18 30 L26 42" stroke="#ffd66b" stroke-width="4" stroke-linecap="round"/>
+    <path d="M82 30 L74 42" stroke="#ffd66b" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   0. STATE
+   ============================================================ */
+const state = {
+  name: "",
+  reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  musicOn: false
+};
+
+function fname(){ return state.name || "Friend"; }
+
+/* ============================================================
+   1. NAME GATE
+   ============================================================ */
+const gate = document.getElementById("name-gate");
+const nameInput = document.getElementById("name-input");
+const gateErr = document.getElementById("gate-error");
+const site = document.getElementById("site");
+
+function submitName(){
+  let val = nameInput.value.trim();
+  val = val.replace(/[<>]/g,"");
+  if(!val){
+    gateErr.textContent = "Even mystery friends need a name. Type something!";
+    nameInput.focus();
+    return;
+  }
+  if(val.length > 24) val = val.slice(0,24);
+  state.name = val;
+  document.querySelectorAll(".fname").forEach(el => el.textContent = val);
+  document.title = "Happy Friendship Day, " + val + "!";
+  gate.style.transition = "opacity .6s ease, transform .6s ease";
+  gate.style.opacity = "0";
+  gate.style.transform = "scale(1.04)";
+  setTimeout(()=>{ gate.classList.add("hidden"); }, 600);
+  site.classList.add("revealed");
+  buildDynamicContent();
+  startIntroSequence();
+}
+
+document.getElementById("gate-submit").addEventListener("click", submitName);
+nameInput.addEventListener("keydown", e => { if(e.key === "Enter") submitName(); });
+setTimeout(()=> nameInput.focus(), 400);
+
+/* ============================================================
+   2. CUSTOM CURSOR
+   ============================================================ */
+const dot = document.getElementById("cursor-dot");
+const ring = document.getElementById("cursor-ring");
+let mx=innerWidth/2,my=innerHeight/2, rx=mx, ry=my;
+let hasFinePointer = matchMedia("(pointer:fine)").matches;
+if(hasFinePointer){
+  window.addEventListener("mousemove", e=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+"px"; dot.style.top=my+"px";
+  });
+  document.addEventListener("mousedown", ()=>document.body.classList.add("cursor-pop"));
+  document.addEventListener("mouseup", ()=>document.body.classList.remove("cursor-pop"));
+  (function ringLoop(){
+    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+    ring.style.left=rx+"px"; ring.style.top=ry+"px";
+    requestAnimationFrame(ringLoop);
+  })();
+} else {
+  document.body.classList.add("no-fancy-cursor");
+  dot.style.display="none"; ring.style.display="none";
+}
+
+/* ============================================================
+   3. SCROLL PROGRESS BAR
+   ============================================================ */
+const progressBar = document.getElementById("progress-bar");
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progressBar.style.width = (scrolled||0) + "%";
+}
+document.addEventListener("scroll", updateProgress, {passive:true});
+
+/* ============================================================
+   4. AMBIENT BACKGROUND CANVAS (stars + soft glow orbs)
+   ============================================================ */
+const bgCanvas = document.getElementById("bg-canvas");
+const bgCtx = bgCanvas.getContext("2d");
+let W,H;
+function resizeBg(){ W=bgCanvas.width=innerWidth; H=bgCanvas.height=innerHeight; }
+resizeBg(); window.addEventListener("resize", resizeBg);
+
+const stars = Array.from({length: 140}, ()=>({
+  x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+  r: Math.random()*1.6+0.3, tw: Math.random()*Math.PI*2, speed: Math.random()*0.02+0.005
+}));
+const orbs = [
+  {x:.2,y:.25,r:260,c:"rgba(255,111,201,.10)"},
+  {x:.8,y:.15,r:220,c:"rgba(127,227,255,.09)"},
+  {x:.5,y:.85,r:300,c:"rgba(178,140,255,.10)"}
+];
+
+function drawBg(){
+  bgCtx.clearRect(0,0,W,H);
+  orbs.forEach(o=>{
+    const g = bgCtx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r);
+    g.addColorStop(0,o.c); g.addColorStop(1,"rgba(0,0,0,0)");
+    bgCtx.fillStyle=g;
+    bgCtx.fillRect(0,0,W,H);
+  });
+  stars.forEach(s=>{
+    s.tw += s.speed;
+    const alpha = 0.4 + Math.sin(s.tw)*0.4;
+    bgCtx.beginPath();
+    bgCtx.fillStyle = "rgba(255,255,255,"+Math.max(0,alpha)+")";
+    bgCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    bgCtx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+/* ============================================================
+   5. FX PARTICLE ENGINE (confetti / hearts / fireworks / petals / butterflies)
+   ============================================================ */
+const fxCanvas = document.getElementById("fx-canvas");
+const fxCtx = fxCanvas.getContext("2d");
+function resizeFx(){ fxCanvas.width=innerWidth; fxCanvas.height=innerHeight; }
+resizeFx(); window.addEventListener("resize", resizeFx);
+
+let particles = [];
+const COLORS = ["#ff6fc9","#b28cff","#7fe3ff","#ffd66b","#ffc2ec","#ffffff"];
+function rand(a,b){ return a + Math.random()*(b-a); }
+
+function spawnConfetti(x,y,count){
+  count = count || 60;
+  for(let i=0;i<count;i++){
+    particles.push({
+      type:"confetti", x, y,
+      vx: rand(-6,6), vy: rand(-9,-2),
+      g: 0.22, rot: rand(0,360), vr: rand(-10,10),
+      w: rand(6,10), h: rand(8,14),
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      life: 0, maxLife: rand(70,120)
+    });
+  }
+}
+function spawnHearts(x,y,count){
+  count = count || 24;
+  for(let i=0;i<count;i++){
+    particles.push({
+      type:"heart", x: x+rand(-40,40), y: y+rand(-10,10),
+      vx: rand(-1.4,1.4), vy: rand(-3.2,-1.4),
+      size: rand(14,26), life:0, maxLife: rand(70,110), color: COLORS[Math.floor(Math.random()*3)]
+    });
+  }
+}
+function spawnFirework(x,y){
+  const count = 46;
+  const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+  for(let i=0;i<count;i++){
+    const a = (Math.PI*2*i)/count;
+    const speed = rand(2,6.5);
+    particles.push({
+      type:"spark", x, y,
+      vx: Math.cos(a)*speed, vy: Math.sin(a)*speed,
+      g: 0.05, life:0, maxLife: rand(50,80), color, size: rand(2,3.4)
+    });
+  }
+}
+function spawnPetals(count){
+  count = count || 30;
+  for(let i=0;i<count;i++){
+    particles.push({
+      type:"petal", x: rand(0,innerWidth), y: -20,
+      vx: rand(-.6,.6), vy: rand(1,2.4), rot: rand(0,360), vr: rand(-4,4),
+      size: rand(8,16), life:0, maxLife: 400, color: COLORS[Math.floor(Math.random()*3)]
+    });
+  }
+}
+function spawnButterflies(count){
+  count = count || 6;
+  for(let i=0;i<count;i++){
+    particles.push({
+      type:"butterfly", x: rand(0,innerWidth), y: rand(innerHeight*0.3,innerHeight*0.9),
+      vx: rand(-1,1), vy: rand(-1,1), t: rand(0,10),
+      size: rand(10,16), life:0, maxLife: 500, color: COLORS[Math.floor(Math.random()*4)]
+    });
+  }
+}
+function spawnStars(x,y,count){
+  count = count || 20;
+  for(let i=0;i<count;i++){
+    particles.push({
+      type:"sparkStar", x, y,
+      vx: rand(-4,4), vy: rand(-4,4), g:0.02,
+      life:0, maxLife: rand(30,60), size: rand(2,4), color:"#ffd66b"
+    });
+  }
+}
+
+function drawHeart(ctx,x,y,size,color){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.scale(size/20, size/20);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0,4);
+  ctx.bezierCurveTo(0,-2,-10,-2,-10,6);
+  ctx.bezierCurveTo(-10,14,0,18,0,22);
+  ctx.bezierCurveTo(0,18,10,14,10,6);
+  ctx.bezierCurveTo(10,-2,0,-2,0,4);
+  ctx.fill();
+  ctx.restore();
+}
+function drawButterfly(ctx,p){
+  const flap = Math.sin(p.t*6)*0.5+0.5;
+  ctx.save();
+  ctx.translate(p.x,p.y);
+  ctx.fillStyle = p.color;
+  ctx.globalAlpha = 0.85;
+  ctx.beginPath();
+  ctx.ellipse(-p.size*0.5, -flap*p.size*0.4, p.size*0.6, p.size*0.4, 0,0,Math.PI*2);
+  ctx.ellipse(p.size*0.5, -flap*p.size*0.4, p.size*0.6, p.size*0.4, 0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function fxLoop(){
+  fxCtx.clearRect(0,0,fxCanvas.width,fxCanvas.height);
+  particles.forEach(p=>{
+    p.life++;
+    if(p.type==="confetti"){
+      p.vy += p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      fxCtx.save(); fxCtx.translate(p.x,p.y); fxCtx.rotate(p.rot*Math.PI/180);
+      fxCtx.fillStyle = p.color; fxCtx.globalAlpha = Math.max(0,1-p.life/p.maxLife);
+      fxCtx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      fxCtx.restore();
+    } else if(p.type==="heart"){
+      p.x+=p.vx; p.y+=p.vy;
+      fxCtx.globalAlpha = Math.max(0,1-p.life/p.maxLife);
+      drawHeart(fxCtx,p.x,p.y,p.size,p.color);
+      fxCtx.globalAlpha = 1;
+    } else if(p.type==="spark"){
+      p.vy += p.g; p.x+=p.vx; p.y+=p.vy;
+      fxCtx.globalAlpha = Math.max(0,1-p.life/p.maxLife);
+      fxCtx.fillStyle = p.color;
+      fxCtx.beginPath(); fxCtx.arc(p.x,p.y,p.size,0,Math.PI*2); fxCtx.fill();
+      fxCtx.globalAlpha = 1;
+    } else if(p.type==="petal"){
+      p.x += p.vx + Math.sin(p.life*0.03); p.y+=p.vy; p.rot+=p.vr;
+      fxCtx.save(); fxCtx.translate(p.x,p.y); fxCtx.rotate(p.rot*Math.PI/180);
+      fxCtx.fillStyle = p.color; fxCtx.globalAlpha = 0.85;
+      fxCtx.beginPath(); fxCtx.ellipse(0,0,p.size,p.size*0.6,0,0,Math.PI*2); fxCtx.fill();
+      fxCtx.restore();
+    } else if(p.type==="butterfly"){
+      p.t += 0.06;
+      p.x += p.vx + Math.sin(p.t)*0.6; p.y += p.vy + Math.cos(p.t*0.7)*0.4;
+      if(p.x<0)p.x=innerWidth; if(p.x>innerWidth)p.x=0;
+      if(p.y<0)p.y=innerHeight; if(p.y>innerHeight)p.y=0;
+      drawButterfly(fxCtx,p);
+    } else if(p.type==="sparkStar"){
+      p.vy += p.g; p.x+=p.vx; p.y+=p.vy;
+      fxCtx.globalAlpha = Math.max(0,1-p.life/p.maxLife);
+      fxCtx.fillStyle = p.color;
+      fxCtx.save(); fxCtx.translate(p.x,p.y); fxCtx.rotate(p.life*0.2);
+      for(let k=0;k<4;k++){
+        fxCtx.rotate(Math.PI/2);
+        fxCtx.beginPath();
+        fxCtx.moveTo(0,0); fxCtx.lineTo(p.size*2,0);
+        fxCtx.lineWidth=1.4; fxCtx.strokeStyle=p.color; fxCtx.stroke();
+      }
+      fxCtx.restore();
+      fxCtx.globalAlpha = 1;
+    }
+  });
+  particles = particles.filter(p => p.life < p.maxLife);
+  requestAnimationFrame(fxLoop);
+}
+fxLoop();
+
+// gentle continuous butterflies + occasional petals for ambience, reduced if user prefers
+if(!state.reduced){
+  spawnButterflies(4);
+  setInterval(()=>{ if(particles.filter(p=>p.type==="butterfly").length < 6) spawnButterflies(1); }, 6000);
+}
+
+/* ============================================================
+   6. TOASTS
+   ============================================================ */
+const toastLayer = document.getElementById("toast-layer");
+function toast(msg){
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  toastLayer.appendChild(el);
+  setTimeout(()=> el.remove(), 3200);
+}
+const toastMessages = () => [
+  "😂 This friend is officially certified crazy.",
+  "😂 Too much cuteness detected.",
+  "😂 Please feed " + fname() + " before she becomes angry.",
+  "😂 Smile detected.",
+  "😂 Happiness increased by 500%.",
+  "😂 Best Friend Found.",
+  "😂 Error... this friendship cannot be deleted.",
+  "😂 Friendship subscription renewed automatically."
+];
+let toastPool = [];
+let toastFired = new Set();
+
+/* ============================================================
+   7. MASCOT
+   ============================================================ */
+const mascot = document.getElementById("mascot");
+const mascotBubble = document.getElementById("mascot-bubble");
+const mascotLines = () => [
+  "Hi! I'm your official hype mascot. 👋",
+  "Keep scrolling, it gets weirder. 😄",
+  "Did you press the button yet?",
+  "Fun fact: " + fname() + " is legally certified iconic.",
+  "I throw hearts when I'm proud. 💖",
+  "Almost at the best part!"
+];
+let mascotIdx = 0;
+function mascotSay(text){
+  mascotBubble.textContent = text;
+  mascotBubble.classList.add("show");
+  mascot.classList.remove("talk"); void mascot.offsetWidth; mascot.classList.add("talk");
+  clearTimeout(mascotSay._t);
+  mascotSay._t = setTimeout(()=> mascotBubble.classList.remove("show"), 2800);
+}
+mascot.addEventListener("click", ()=>{
+  const lines = mascotLines();
+  mascotSay(lines[mascotIdx % lines.length]);
+  mascotIdx++;
+  spawnHearts(innerWidth-70, innerHeight-70, 10);
+});
+let lastMascotScroll = 0;
+document.addEventListener("scroll", ()=>{
+  const now = Date.now();
+  if(now - lastMascotScroll > 4500 && Math.random() < 0.4){
+    lastMascotScroll = now;
+    const lines = mascotLines();
+    mascotSay(lines[Math.floor(Math.random()*lines.length)]);
+  }
+}, {passive:true});
+
+/* ============================================================
+   8. INTRO CINEMATIC SEQUENCE
+   ============================================================ */
+function typeLine(el, text, speed, cb){
+  el.textContent = "";
+  let i=0;
+  (function step(){
+    if(i<=text.length){
+      el.textContent = text.slice(0,i);
+      i++;
+      setTimeout(step, speed);
+    } else if(cb) cb();
+  })();
+}
+
+function startIntroSequence(){
+  const line1 = document.getElementById("il-1");
+  line1.classList.add("show");
+  typeLine(line1, "Loading World's Most Dangerous Friend...", 28, ()=>{
+    const fill = document.getElementById("load-bar-fill");
+    let pct = 0;
+    const iv = setInterval(()=>{
+      pct += Math.random()*14+6;
+      if(pct>=100){ pct=100; clearInterval(iv); onLoadDone(); }
+      fill.style.width = pct+"%";
+    }, 160);
+  });
+}
+function onLoadDone(){
+  setTimeout(()=>{
+    document.getElementById("warning-block").classList.add("show");
+    setTimeout(()=>{
+      document.getElementById("name-reveal").classList.add("show");
+      document.querySelector(".sparkle-row").classList.add("show");
+      const rect = document.getElementById("name-reveal").getBoundingClientRect();
+      spawnConfetti(rect.left+rect.width/2, rect.top+rect.height/2, 90);
+      spawnHearts(rect.left+rect.width/2, rect.top, 20);
+      spawnFirework(innerWidth*0.25, innerHeight*0.4);
+      spawnFirework(innerWidth*0.75, innerHeight*0.3);
+      toast("😂 Best Friend Found.");
+    }, 500);
+    setTimeout(()=>{
+      document.getElementById("intro-scrolldown").classList.add("show");
+    }, 1600);
+  }, 400);
+}
+
+/* ============================================================
+   9. SCROLL REVEAL ENGINE (IntersectionObserver)
+   ============================================================ */
+function prepFloatLetters(){
+  document.querySelectorAll('[data-anim="float-letters"]').forEach(el=>{
+    if(el.dataset.prepped) return;
+    const text = el.textContent;
+    el.textContent = "";
+    [...text].forEach((ch,i)=>{
+      const span = document.createElement("span");
+      span.className = "fl";
+      span.style.transitionDelay = (i*22)+"ms";
+      span.textContent = ch === " " ? "\u00A0" : ch;
+      el.appendChild(span);
+    });
+    el.dataset.prepped = "1";
+  });
+}
+function prepTypewriters(){
+  document.querySelectorAll('[data-anim="typewriter"]').forEach(el=>{
+    if(el.dataset.prepped) return;
+    el.dataset.fulltext = el.textContent;
+    el.textContent = "";
+    el.dataset.prepped = "1";
+  });
+}
+function runTypewriter(el){
+  if(el.dataset.typed) return;
+  el.dataset.typed = "1";
+  const text = el.dataset.fulltext || "";
+  let i=0;
+  el.innerHTML = '<span class="tw-txt"></span><span class="tw-cursor">&nbsp;</span>';
+  const txtEl = el.querySelector(".tw-txt");
+  (function step(){
+    if(i<=text.length){
+      txtEl.textContent = text.slice(0,i);
+      i++;
+      setTimeout(step, 24);
+    }
+  })();
+}
+
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("in-view");
+      if(entry.target.getAttribute("data-anim")==="typewriter"){
+        runTypewriter(entry.target);
+      }
+    }
+  });
+}, { threshold:0.35 });
+
+function initRevealElements(){
+  prepFloatLetters();
+  prepTypewriters();
+  document.querySelectorAll("[data-anim]").forEach(el=> revealObserver.observe(el));
+}
+
+// popup/toast triggers tied to key sections
+const popupSectionIds = ["scan-section","magic-section","roast-section","sky-section","quiz-section","meter-section"];
+function initPopupTriggers(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && !toastFired.has(entry.target.id)){
+        toastFired.add(entry.target.id);
+        const pool = toastMessages();
+        toast(pool[Math.floor(Math.random()*pool.length)]);
+      }
+    });
+  }, { threshold:0.5 });
+  popupSectionIds.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) obs.observe(el);
+  });
+}
+
+/* ============================================================
+   10. AI SCAN STATS
+   ============================================================ */
+const scanStats = [
+  ["Cute Level","999999%"],
+  ["Drama Level","Unlimited"],
+  ["Eating Speed","Faster than WiFi"],
+  ["Sleep Mode","24×7"],
+  ["Shopping Skills","Legendary"],
+  ["Selfie Collection","Infinite"],
+  ["Laugh Power","Maximum"],
+  ["Anger Duration","5 Minutes"],
+  ["Forgiveness Speed","Lightning Fast"]
+];
+function buildScan(){
+  const grid = document.getElementById("stat-grid");
+  grid.innerHTML = "";
+  scanStats.forEach(([label,val])=>{
+    const row = document.createElement("div");
+    row.className = "stat-row";
+    row.innerHTML = `<div class="stat-label"><span>${label}</span><span class="stat-value">${val}</span></div>
+      <div class="stat-track"><div class="stat-fill"></div></div>`;
+    grid.appendChild(row);
+  });
+}
+let scanStarted = false;
+function runScanSequence(){
+  if(scanStarted) return;
+  scanStarted = true;
+  const log = document.getElementById("scan-log");
+  const steps = [
+    "Scanning...", "Analyzing Friend...", "Loading Friendship Database...",
+    "Finding Cute Level...", "Finding Drama Level...", "Finding Eating Capacity...",
+    "Finding Sleep Level...", "Finding Shopping Addiction...", "Finding Selfie Addiction...", "Loading..."
+  ];
+  let i=0;
+  (function next(){
+    if(i<steps.length){
+      typeLine(log, steps[i], 18, ()=>{ i++; setTimeout(next, 260); });
+    } else {
+      const rows = document.querySelectorAll(".stat-row");
+      rows.forEach((row,idx)=>{
+        setTimeout(()=>{
+          row.classList.add("show");
+          row.querySelector(".stat-fill").style.width = "100%";
+        }, idx*160);
+      });
+      setTimeout(()=>{
+        document.getElementById("rating-line").style.transition = "opacity .8s ease";
+        document.getElementById("rating-line").style.opacity = "1";
+        spawnConfetti(innerWidth/2, innerHeight/2, 50);
+      }, rows.length*160 + 300);
+    }
+  })();
+}
+function initScanTrigger(){
+  const target = document.getElementById("scan-card");
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{ if(entry.isIntersecting) runScanSequence(); });
+  }, {threshold:0.4});
+  obs.observe(target);
+}
+
+/* ============================================================
+   11. MAGIC BUTTONS
+   ============================================================ */
+const magicMsgs = {
+  "press-me": [
+    "You pressed it. Confidence level: legendary.",
+    "Achievement unlocked: Button Presser."
+  ],
+  "dont-press": [
+    "You pressed it anyway, didn't you.",
+    "Rules were basically a suggestion."
+  ],
+  "seriously-dont": [
+    "Okay wow. Bold choice.",
+    "There is no undo button for this decision."
+  ],
+  "one-more": [
+    "One more time, forever, apparently.",
+    "This button has commitment issues, just like your snack budget."
+  ]
+};
+function initMagicButtons(){
+  const msgEl = document.getElementById("magic-msg");
+  document.querySelectorAll(".magic-btn").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      const type = btn.dataset.fx;
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
+      if(type==="press-me"){ spawnHearts(cx,cy,26); }
+      else if(type==="dont-press"){ spawnConfetti(cx,cy,70); }
+      else if(type==="seriously-dont"){ spawnFirework(cx,cy); spawnFirework(cx+40,cy-30); }
+      else { spawnStars(cx,cy,22); }
+      const lines = magicMsgs[type];
+      msgEl.textContent = lines[Math.floor(Math.random()*lines.length)];
+      mascotSay("Called it. 😏");
+    });
+  });
+}
+
+/* ============================================================
+   12. ROAST + COMPLIMENT
+   ============================================================ */
+const roasts = [
+  "You eat like tomorrow doesn't exist.",
+  "You can sleep through an earthquake.",
+  "Your phone battery fears you.",
+  "The mirror is your best friend (after me, obviously).",
+  "Even Google can't calculate your mood swings.",
+  "You laugh before you understand the joke.",
+  "Shopping is basically your cardio.",
+  "Your selfies deserve their own cloud storage plan."
+];
+const compliments = [
+  "But honestly? You're amazing.",
+  "But seriously — you're one of the kindest people I know.",
+  "But real talk — you're caring in a way people don't forget.",
+  "But truly — you're beautiful inside and out.",
+  "But no joke — you're one of the best friends anyone could ask for.",
+  "But actually — you make everything more fun just by being there.",
+  "But for real — the world's better with you in it.",
+  "But genuinely — never change. You're wonderfully you."
+];
+function buildRoasts(){
+  const grid = document.getElementById("roast-grid");
+  grid.innerHTML = "";
+  roasts.forEach((r,i)=>{
+    const c = compliments[i % compliments.length];
+    const card = document.createElement("div");
+    card.className = "roast-card";
+    card.innerHTML = `
+      <div class="roast-inner">
+        <div class="roast-face roast-front"><p>"${r}"</p><span class="roast-tag">Tap to reveal ✨</span></div>
+        <div class="roast-face roast-back"><p>${c}</p><span class="roast-tag">💖</span></div>
+      </div>`;
+    card.addEventListener("click", ()=>{
+      const wasFlipped = card.classList.contains("flipped");
+      card.classList.toggle("flipped");
+      if(!wasFlipped){
+        const rect = card.getBoundingClientRect();
+        spawnHearts(rect.left+rect.width/2, rect.top+rect.height/2, 10);
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ============================================================
+   13. CLICK SURPRISES SKY
+   ============================================================ */
+function initSky(){
+  const stage = document.getElementById("sky-stage");
+  // clouds
+  for(let i=0;i<3;i++){
+    const cloud = document.createElement("button");
+    cloud.className = "sky-obj cloud-obj";
+    cloud.textContent = "☁️";
+    cloud.style.top = (20+i*40)+"px";
+    cloud.style.left = (20+i*90)+"px";
+    cloud.addEventListener("click", (e)=>{
+      const r = cloud.getBoundingClientRect();
+      spawnPetals(18);
+      toast("😂 Flower rain activated.");
+    });
+    stage.appendChild(cloud);
+  }
+  // stars scattered
+  for(let i=0;i<14;i++){
+    const star = document.createElement("button");
+    star.className = "sky-obj star-obj";
+    star.textContent = "✦";
+    star.style.top = rand(40,340)+"px";
+    star.style.left = rand(10,90)+"%";
+    star.addEventListener("click", ()=>{
+      const r = star.getBoundingClientRect();
+      spawnStars(r.left, r.top, 16);
+    });
+    stage.appendChild(star);
+  }
+  // butterflies
+  for(let i=0;i<4;i++){
+    const b = document.createElement("button");
+    b.className = "sky-obj";
+    b.style.background="none"; b.style.border="none"; b.style.fontSize="1.6rem";
+    b.textContent = "🦋";
+    b.style.top = rand(200,360)+"px";
+    b.style.left = rand(10,85)+"%";
+    b.addEventListener("click", ()=>{
+      spawnButterflies(4);
+    });
+    stage.appendChild(b);
+  }
+  // heart click zone (click empty space -> hearts)
+  const heartZone = document.createElement("div");
+  heartZone.className = "heart-zone";
+  heartZone.addEventListener("click", (e)=>{
+    if(e.target !== heartZone) return;
+    const rect = stage.getBoundingClientRect();
+    spawnHearts(e.clientX, e.clientY, 16);
+  });
+  stage.insertBefore(heartZone, stage.firstChild);
+
+  document.getElementById("moon-obj").addEventListener("click", ()=>{
+    const r = document.getElementById("moon-obj").getBoundingClientRect();
+    spawnConfetti(r.left+r.width/2, r.top+r.height/2, 40);
+    toast("🌙 The moon approves of this friendship.");
+  });
+}
+
+/* ============================================================
+   14. QUIZ
+   ============================================================ */
+function initQuiz(){
+  const opts = document.querySelectorAll(".quiz-opt");
+  const result = document.getElementById("quiz-result");
+  let answered = false;
+  opts.forEach(opt=>{
+    opt.addEventListener("click", ()=>{
+      if(answered) return;
+      if(opt.dataset.correct === "true"){
+        answered = true;
+        opt.classList.add("correct");
+        const rect = opt.getBoundingClientRect();
+        spawnConfetti(rect.left+rect.width/2, rect.top+rect.height/2, 60);
+        result.textContent = "Correct! Obviously. 🎉";
+      } else {
+        opt.classList.add("fly-away");
+      }
+    });
+  });
+}
+
+/* ============================================================
+   15. FUN METER
+   ============================================================ */
+const meters = [
+  ["Trust", 98, "var(--pink)"],
+  ["Loyalty", 100, "var(--gold)"],
+  ["Laughs Per Day", 87, "var(--sky)"],
+  ["Crazy Level", 120, "var(--lavender)"],
+  ["Food Sharing", 92, "var(--pink)"],
+  ["Photo Bombing", 76, "var(--sky)"],
+  ["Late Replies", 40, "var(--gold)"]
+];
+function buildMeter(){
+  const list = document.getElementById("meter-list");
+  list.innerHTML = "";
+  meters.forEach(([label,pct,color])=>{
+    const capped = Math.min(pct,100);
+    const row = document.createElement("div");
+    row.className = "meter-row";
+    row.innerHTML = `<div class="meter-label"><span>${label}</span><span>${pct}%</span></div>
+      <div class="meter-track"><div class="meter-fill" style="color:${color}; background:${color};"></div></div>`;
+    list.appendChild(row);
+  });
+  const target = document.getElementById("meter-section");
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        document.querySelectorAll(".meter-fill").forEach((fill,idx)=>{
+          setTimeout(()=>{ fill.style.width = Math.min(meters[idx][1],100)+"%"; }, idx*120);
+        });
+        obs.disconnect();
+      }
+    });
+  }, {threshold:0.3});
+  obs.observe(target);
+}
+
+/* ============================================================
+   16. CERTIFICATE GENERATOR (canvas)
+   ============================================================ */
+function drawCertificate(){
+  const canvas = document.getElementById("cert-canvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  const grad = ctx.createLinearGradient(0,0,w,h);
+  grad.addColorStop(0,"#1c1240"); grad.addColorStop(1,"#08071a");
+  ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+
+  // border
+  ctx.strokeStyle = "#ffd66b";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(24,24,w-48,h-48);
+  ctx.strokeStyle = "rgba(255,214,107,.4)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(34,34,w-68,h-68);
+
+  // sparkle dots
+  for(let i=0;i<40;i++){
+    ctx.fillStyle = "rgba(255,255,255,"+(Math.random()*0.5+0.1)+")";
+    ctx.beginPath();
+    ctx.arc(Math.random()*w, Math.random()*h, Math.random()*1.6, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#7fe3ff";
+  ctx.font = "700 20px system-ui";
+  ctx.fillText("CERTIFICATE OF LEGENDARY FRIENDSHIP", w/2, 110);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 56px ui-rounded, system-ui";
+  ctx.shadowColor = "#ff6fc9"; ctx.shadowBlur = 20;
+  ctx.fillText(fname(), w/2, 210);
+  ctx.shadowBlur = 0;
+
+  ctx.font = "400 18px system-ui";
+  ctx.fillStyle = "rgba(255,255,255,.85)";
+  wrapText(ctx, "is hereby recognized as an officially certified, world-class, unreasonably fun best friend, with unlimited drama, infinite selfies, and a friendship rating of infinity out of ten.", w/2, 270, w-220, 28);
+
+  ctx.font = "700 26px ui-rounded, system-ui";
+  ctx.fillStyle = "#ffd66b";
+  ctx.fillText("Friendship Rating: ∞ / 10", w/2, 430);
+
+  ctx.font = "italic 16px system-ui";
+  ctx.fillStyle = "rgba(255,255,255,.6)";
+  ctx.fillText("Awarded on " + new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}), w/2, h-70);
+
+  ctx.font = "700 15px system-ui";
+  ctx.fillStyle = "#ff8fda";
+  ctx.fillText("Happy Friendship Day 💖", w/2, h-40);
+}
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = text.split(" ");
+  let line = "";
+  let cy = y;
+  words.forEach(word=>{
+    const test = line + word + " ";
+    if(ctx.measureText(test).width > maxWidth && line !== ""){
+      ctx.fillText(line, x, cy);
+      line = word + " ";
+      cy += lineHeight;
+    } else {
+      line = test;
+    }
+  });
+  ctx.fillText(line, x, cy);
+}
+function initCertificate(){
+  drawCertificate();
+  document.getElementById("cert-regen").addEventListener("click", ()=>{
+    drawCertificate();
+    toast("😂 Regenerated. Same friend, extra sparkle.");
+  });
+  document.getElementById("cert-download").addEventListener("click", ()=>{
+    const canvas = document.getElementById("cert-canvas");
+    const link = document.createElement("a");
+    link.download = "friendship-certificate-" + fname().replace(/\s+/g,"_") + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+/* ============================================================
+   17. COUNTDOWN / CLOCK / QUOTES
+   ============================================================ */
+function nextFriendshipDay(){
+  // First Sunday of August, following the common observance
+  const now = new Date();
+  let year = now.getFullYear();
+  function firstSundayOfAugust(y){
+    const d = new Date(y,7,1);
+    const day = d.getDay();
+    const offset = (7-day)%7;
+    return new Date(y,7,1+offset);
+  }
+  let target = firstSundayOfAugust(year);
+  if(target < now){ target = firstSundayOfAugust(year+1); }
+  return target;
+}
+function buildCountdown(){
+  const grid = document.getElementById("countdown-grid");
+  grid.innerHTML = ["Days","Hours","Min","Sec"].map(l=>`
+    <div class="cd-unit"><div class="n" id="cd-${l}">00</div><div class="l">${l}</div></div>
+  `).join("");
+  const target = nextFriendshipDay();
+  function tick(){
+    const now = new Date();
+    let diff = Math.max(0, target - now);
+    const d = Math.floor(diff/86400000); diff -= d*86400000;
+    const h = Math.floor(diff/3600000); diff -= h*3600000;
+    const m = Math.floor(diff/60000); diff -= m*60000;
+    const s = Math.floor(diff/1000);
+    document.getElementById("cd-Days").textContent = String(d).padStart(2,"0");
+    document.getElementById("cd-Hours").textContent = String(h).padStart(2,"0");
+    document.getElementById("cd-Min").textContent = String(m).padStart(2,"0");
+    document.getElementById("cd-Sec").textContent = String(s).padStart(2,"0");
+  }
+  tick(); setInterval(tick,1000);
+}
+function buildClock(){
+  function tick(){
+    const now = new Date();
+    document.getElementById("live-clock").textContent = now.toLocaleTimeString();
+    document.getElementById("live-date").textContent = now.toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  }
+  tick(); setInterval(tick,1000);
+}
+const friendshipQuotes = [
+  "A good friend knows all your stories. A best friend helped you write them.",
+  "Friendship isn't about who you've known the longest, it's about who walked in and never left.",
+  "Real friends don't judge each other; they judge other people together.",
+  "A best friend is cheaper than therapy and gives better advice anyway.",
+  "Friends buy you food. Best friends eat your food and call it sharing.",
+  "In the middle of chaos, a true friend is the calm — or occasionally, the extra chaos.",
+  "Some friendships are seasonal. This one is a permanent weather system.",
+  "A best friend is someone who can name your emotions before you can."
+];
+function initQuoteBtn(){
+  const box = document.getElementById("quote-box");
+  document.getElementById("quote-btn").addEventListener("click", ()=>{
+    box.style.opacity = "0";
+    setTimeout(()=>{
+      box.textContent = "\u201C" + friendshipQuotes[Math.floor(Math.random()*friendshipQuotes.length)] + "\u201D";
+      box.style.transition = "opacity .4s ease";
+      box.style.opacity = "1";
+    },200);
+  });
+}
+
+/* ============================================================
+   18. MEMORY WALL
+   ============================================================ */
+const seedNotes = () => [
+  "That time we laughed until we cried over nothing.",
+  "3am voice notes that made no sense.",
+  "The inside joke only " + fname() + " and I understand.",
+  "Every terrible selfie we've ever taken together."
+];
+function addSticky(text){
+  const board = document.getElementById("board");
+  const note = document.createElement("div");
+  note.className = "sticky";
+  const colors = ["#ffe08a","#ffb3e6","#b7f0ff","#c9b3ff","#c8ffcf"];
+  note.style.background = colors[Math.floor(Math.random()*colors.length)];
+  note.style.color = "#241338";
+  note.style.setProperty("--r", (Math.random()*10-5)+"deg");
+  note.textContent = text;
+  board.appendChild(note);
+}
+function initWall(){
+  seedNotes().forEach(addSticky);
+  document.getElementById("note-form").addEventListener("submit", e=>{
+    e.preventDefault();
+    const input = document.getElementById("note-input");
+    const val = input.value.trim().replace(/[<>]/g,"");
+    if(!val) return;
+    addSticky(val);
+    input.value = "";
+    toast("📌 Memory pinned!");
+  });
+}
+
+/* ============================================================
+   19. SPECIAL LETTER
+   ============================================================ */
+function buildLetter(){
+  const box = document.getElementById("letter-text");
+  const lines = [
+    `Happy Friendship Day, ${fname()} ❤️`,
+    "Thank you for every laugh.",
+    "Thank you for every memory.",
+    "Thank you for every stupid, wonderful conversation.",
+    "Thank you for being crazy together with me.",
+    "Life becomes brighter with friends like you.",
+    "May you always smile.",
+    "May all your dreams come true.",
+    "May happiness follow you forever.",
+    "Never change. Stay exactly as wonderfully crazy as you are."
+  ];
+  box.innerHTML = lines.map(l=>`<p>${l}</p>`).join("");
+  const paras = box.querySelectorAll("p");
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        paras.forEach((p,i)=> setTimeout(()=> p.classList.add("show"), i*260));
+        obs.disconnect();
+      }
+    });
+  }, {threshold:0.3});
+  obs.observe(box);
+}
+
+/* ============================================================
+   20. FINALE
+   ============================================================ */
+function initFinale(){
+  document.getElementById("finale-from").textContent = "Made with way too much love (and even more glitter) for " + fname() + ".";
+  const target = document.getElementById("finale");
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        document.getElementById("finale-title").classList.add("show");
+        document.getElementById("finale-from").classList.add("show");
+        document.querySelector(".finale-actions").classList.add("show");
+        setTimeout(()=>{
+          spawnFirework(innerWidth*0.2, innerHeight*0.5);
+          spawnFirework(innerWidth*0.5, innerHeight*0.35);
+          spawnFirework(innerWidth*0.8, innerHeight*0.5);
+          spawnPetals(40);
+          spawnHearts(innerWidth/2, innerHeight*0.6, 30);
+          spawnConfetti(innerWidth/2, innerHeight*0.4, 80);
+        }, 500);
+        obs.disconnect();
+      }
+    });
+  }, {threshold:0.5});
+  obs.observe(target);
+
+  document.getElementById("finale-fireworks").addEventListener("click", ()=>{
+    spawnFirework(rand(innerWidth*0.2,innerWidth*0.8), rand(innerHeight*0.2,innerHeight*0.6));
+    spawnFirework(rand(innerWidth*0.2,innerWidth*0.8), rand(innerHeight*0.2,innerHeight*0.6));
+  });
+  document.getElementById("replay-btn").addEventListener("click", ()=>{
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+}
+
+/* ============================================================
+   21. MUSIC TOGGLE (WebAudio ambient chime, no external files)
+   ============================================================ */
+let audioCtx, musicTimer;
+function toggleMusic(){
+  state.musicOn = !state.musicOn;
+  document.getElementById("music-toggle").textContent = state.musicOn ? "🔊" : "🔈";
+  if(state.musicOn){
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    playChimeLoop();
+  } else {
+    clearTimeout(musicTimer);
+  }
+}
+function playChime(freq, when, dur){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, audioCtx.currentTime+when);
+  gain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime+when+0.05);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+when+dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(audioCtx.currentTime+when);
+  osc.stop(audioCtx.currentTime+when+dur+0.05);
+}
+function playChimeLoop(){
+  if(!state.musicOn) return;
+  const notes = [523.25,659.25,783.99,987.77,880,659.25];
+  notes.forEach((n,i)=> playChime(n, i*0.5, 1.1));
+  musicTimer = setTimeout(playChimeLoop, notes.length*500 + 700);
+}
+document.getElementById("music-toggle").addEventListener("click", toggleMusic);
+
+/* ============================================================
+   22. SHARE BUTTON
+   ============================================================ */
+document.getElementById("share-toggle").addEventListener("click", async ()=>{
+  const shareData = { title: "Happy Friendship Day " + fname(), text: "Check out this Friendship Day surprise!", url: location.href };
+  try{
+    if(navigator.share){ await navigator.share(shareData); }
+    else{
+      await navigator.clipboard.writeText(location.href);
+      toast("🔗 Link copied to clipboard!");
+    }
+  }catch(e){ /* user cancelled share, ignore */ }
+});
+
+/* ============================================================
+   23. GLOBAL CLICK -> occasional star sparkle for delight
+   ============================================================ */
+document.addEventListener("click", (e)=>{
+  if(e.target.closest("button, a, input, .sticky")) return;
+  if(Math.random() < 0.5) spawnStars(e.clientX, e.clientY, 8);
+});
+
+/* ============================================================
+   24. BUILD DYNAMIC CONTENT (called after name submit)
+   ============================================================ */
+let built = false;
+function buildDynamicContent(){
+  if(built) return;
+  built = true;
+  buildScan();
+  buildRoasts();
+  buildMeter();
+  buildLetter();
+  initSky();
+  initQuiz();
+  initMagicButtons();
+  initCertificate();
+  buildCountdown();
+  buildClock();
+  initQuoteBtn();
+  initWall();
+  initFinale();
+  requestAnimationFrame(()=>{
+    initRevealElements();
+    initPopupTriggers();
+    initScanTrigger();
+  });
+}
+
+})();
+</script>
+</body>
+</html>
